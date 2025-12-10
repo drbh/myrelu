@@ -1,0 +1,21 @@
+name: Build and Publish Kernel
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and publish kernel
+        uses: huggingface/publish-to-the-kernel-hub-action@main
+        with:
+          publish: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          hf-token: ${{ secrets.HF_TOKEN }}
+          hf-repo: ${{ vars.HF_REPO }}
