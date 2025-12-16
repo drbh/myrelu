@@ -19,10 +19,11 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - name: Free disk space
+      - name: Free disk space and add swap
         run: |
           echo "Before cleanup"
           df -h
+          free -h
           # Remove large pre-installed packages
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /usr/local/lib/android
@@ -42,8 +43,14 @@ jobs:
           # Remove docker images
           sudo docker image prune --all --force
           sudo docker system prune --all --force --volumes
+          # Add 20GB swap for memory-intensive builds
+          sudo fallocate -l 20G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
           echo "After cleanup"
           df -h
+          free -h
 
       - uses: actions/checkout@v4
 
@@ -53,8 +60,8 @@ jobs:
           kernel-path: "."
           build-target: ci
           nix-command: build
-          nix-max-jobs: "2"
-          nix-cores: "4"
+          nix-max-jobs: "1"
+          nix-cores: "2"
           sandbox-mode: fallback
           upload-artifact: "false"
 
@@ -63,10 +70,11 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - name: Free disk space
+      - name: Free disk space and add swap
         run: |
           echo "Before cleanup"
           df -h
+          free -h
           # Remove large pre-installed packages
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /usr/local/lib/android
@@ -86,8 +94,14 @@ jobs:
           # Remove docker images
           sudo docker image prune --all --force
           sudo docker system prune --all --force --volumes
+          # Add 20GB swap for memory-intensive builds
+          sudo fallocate -l 20G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
           echo "After cleanup"
           df -h
+          free -h
 
       - uses: actions/checkout@v4
 
@@ -97,8 +111,8 @@ jobs:
           kernel-path: "."
           build-target: build-and-upload
           nix-command: run
-          nix-max-jobs: "2"
-          nix-cores: "4"
+          nix-max-jobs: "1"
+          nix-cores: "2"
           sandbox-mode: fallback
           upload-artifact: "false"
         env:
@@ -110,10 +124,11 @@ jobs:
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
-      - name: Free disk space
+      - name: Free disk space and add swap
         run: |
           echo "Before cleanup"
           df -h
+          free -h
           # Remove large pre-installed packages
           sudo rm -rf /usr/share/dotnet
           sudo rm -rf /usr/local/lib/android
@@ -133,8 +148,14 @@ jobs:
           # Remove docker images
           sudo docker image prune --all --force
           sudo docker system prune --all --force --volumes
+          # Add 20GB swap for memory-intensive builds
+          sudo fallocate -l 20G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
           echo "After cleanup"
           df -h
+          free -h
 
       - uses: actions/checkout@v4
 
@@ -145,8 +166,8 @@ jobs:
           kernel-path: "."
           build-target: ci
           nix-command: build
-          nix-max-jobs: "2"
-          nix-cores: "4"
+          nix-max-jobs: "1"
+          nix-cores: "2"
           sandbox-mode: fallback
           upload-artifact: "false"
 
@@ -157,8 +178,8 @@ jobs:
           kernel-path: "."
           build-target: build-and-upload
           nix-command: run
-          nix-max-jobs: "2"
-          nix-cores: "4"
+          nix-max-jobs: "1"
+          nix-cores: "2"
           sandbox-mode: fallback
           upload-artifact: "false"
         env:
