@@ -10,6 +10,6 @@ src = [
 
 [kernel.activation]
 backend = "cuda"
-cuda_capabilities = ["8.0"]
+cuda-capabilities = ["8.0"]
 depends = ["torch"]
 src = ["relu_cuda/relu.cu"]
