@@ -64,6 +64,9 @@ jobs:
           nix-cores: "2"
           sandbox-mode: fallback
           upload-artifact: "false"
+          extra-nix-conf: |
+            min-free = 10000000000
+            max-free = 20000000000
 
   # Release builds - build and upload to HF Hub
   build-release:
@@ -115,6 +118,9 @@ jobs:
           nix-cores: "2"
           sandbox-mode: fallback
           upload-artifact: "false"
+          extra-nix-conf: |
+            min-free = 10000000000
+            max-free = 20000000000
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_REPO: drbh/myrelu
@@ -170,6 +176,9 @@ jobs:
           nix-cores: "2"
           sandbox-mode: fallback
           upload-artifact: "false"
+          extra-nix-conf: |
+            min-free = 10000000000
+            max-free = 20000000000
 
       - name: Build and upload kernel (Release mode)
         if: inputs.publish == true
@@ -182,6 +191,9 @@ jobs:
           nix-cores: "2"
           sandbox-mode: fallback
           upload-artifact: "false"
+          extra-nix-conf: |
+            min-free = 10000000000
+            max-free = 20000000000
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_REPO: drbh/myrelu
