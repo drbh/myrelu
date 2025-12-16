@@ -43,11 +43,11 @@ jobs:
           # Remove docker images
           sudo docker image prune --all --force
           sudo docker system prune --all --force --volumes
-          # Add 20GB swap for memory-intensive builds
-          sudo fallocate -l 20G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
+          # Add 20GB swap for memory-intensive builds (may fail in containers)
+          sudo fallocate -l 20G /swapfile || true
+          sudo chmod 600 /swapfile || true
+          sudo mkswap /swapfile || true
+          sudo swapon /swapfile || true
           echo "After cleanup"
           df -h
           free -h
@@ -62,7 +62,7 @@ jobs:
           nix-command: build
           nix-max-jobs: "1"
           nix-cores: "2"
-          sandbox-mode: fallback
+          sandbox-mode: "false"
           upload-artifact: "false"
           extra-nix-conf: |
             min-free = 10000000000
@@ -97,11 +97,11 @@ jobs:
           # Remove docker images
           sudo docker image prune --all --force
           sudo docker system prune --all --force --volumes
-          # Add 20GB swap for memory-intensive builds
-          sudo fallocate -l 20G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
+          # Add 20GB swap for memory-intensive builds (may fail in containers)
+          sudo fallocate -l 20G /swapfile || true
+          sudo chmod 600 /swapfile || true
+          sudo mkswap /swapfile || true
+          sudo swapon /swapfile || true
           echo "After cleanup"
           df -h
           free -h
@@ -154,11 +154,11 @@ jobs:
           # Remove docker images
           sudo docker image prune --all --force
           sudo docker system prune --all --force --volumes
-          # Add 20GB swap for memory-intensive builds
-          sudo fallocate -l 20G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
+          # Add 20GB swap for memory-intensive builds (may fail in containers)
+          sudo fallocate -l 20G /swapfile || true
+          sudo chmod 600 /swapfile || true
+          sudo mkswap /swapfile || true
+          sudo swapon /swapfile || true
           echo "After cleanup"
           df -h
           free -h
