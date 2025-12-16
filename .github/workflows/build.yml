@@ -6,17 +6,81 @@ on:
       - main
   pull_request:
   workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish to HF Hub after build"
+        required: false
+        default: false
+        type: boolean
 
 jobs:
-  build:
+  # PR builds - just validate the kernel builds
+  build-pr:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build and publish kernel
+      - name: Build kernel (CI)
         uses: huggingface/publish-to-the-kernel-hub-action@main
         with:
-          cachix-name: huggingface
-          publish: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-          hf-token: ${{ secrets.HF_TOKEN }}
-          hf-repo: ${{ vars.HF_REPO }}
+          kernel-path: "."
+          build-target: ci
+          nix-command: build
+          nix-max-jobs: "2"
+          nix-cores: "4"
+          sandbox-mode: fallback
+          upload-artifact: "false"
+
+  # Release builds - build and upload to HF Hub
+  build-release:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and upload kernel
+        uses: huggingface/publish-to-the-kernel-hub-action@main
+        with:
+          kernel-path: "."
+          build-target: build-and-upload
+          nix-command: run
+          nix-max-jobs: "2"
+          nix-cores: "4"
+          sandbox-mode: fallback
+          upload-artifact: "false"
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+
+  # Manual dispatch - allows testing either mode
+  build-manual:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build kernel (CI mode)
+        if: inputs.publish != true
+        uses: huggingface/publish-to-the-kernel-hub-action@main
+        with:
+          kernel-path: "."
+          build-target: ci
+          nix-command: build
+          nix-max-jobs: "2"
+          nix-cores: "4"
+          sandbox-mode: fallback
+          upload-artifact: "false"
+
+      - name: Build and upload kernel (Release mode)
+        if: inputs.publish == true
+        uses: huggingface/publish-to-the-kernel-hub-action@main
+        with:
+          kernel-path: "."
+          build-target: build-and-upload
+          nix-command: run
+          nix-max-jobs: "2"
+          nix-cores: "4"
+          sandbox-mode: fallback
+          upload-artifact: "false"
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
