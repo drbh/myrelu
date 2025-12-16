@@ -118,12 +118,12 @@ jobs:
           nix-cores: "2"
           sandbox-mode: fallback
           upload-artifact: "false"
+          hf-repo: drbh/relu
           extra-nix-conf: |
             min-free = 10000000000
             max-free = 20000000000
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          HF_REPO: drbh/myrelu
 
   # Manual dispatch - allows testing either mode
   build-manual:
@@ -191,9 +191,9 @@ jobs:
           nix-cores: "2"
           sandbox-mode: fallback
           upload-artifact: "false"
+          hf-repo: drbh/relu
           extra-nix-conf: |
             min-free = 10000000000
             max-free = 20000000000
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
-          HF_REPO: drbh/myrelu
