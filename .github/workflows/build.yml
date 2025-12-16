@@ -69,6 +69,7 @@ jobs:
           upload-artifact: "false"
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_REPO: drbh/myrelu
 
   # Manual dispatch - allows testing either mode
   build-manual:
@@ -111,3 +112,4 @@ jobs:
           upload-artifact: "false"
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_REPO: drbh/myrelu
